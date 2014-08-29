@@ -1,9 +1,13 @@
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include <my_global.h>
 #include <mysql.h>
+
+#include <readline/readline.h>
+#include <readline/history.h>
 
 static char* TEA_DB_HOST = "localhost";
 static char* TEA_DB_USER = "root";
@@ -84,6 +88,9 @@ MYSQL_RES* tea_mysql_query_res(char* query) {
 /* ===== REGULAR HELPER FNS ===== */
 void input_add_inventory();
 void input_drink_tea();
+int get_line_i(const char* msg);
+char* get_line_s(const char* msg);
+int int_or_0(char* str);
 int list_tea_inventory(int show_nums);
 void print_options();
 
@@ -135,26 +142,48 @@ int drink_tea(int which,int amount) {
 }
 
 
+int get_line_i(const char* msg) {
+	char* line;
+	int val;
+	
+	line = readline(msg);
+	
+	val = int_or_0(line);
+	
+	if (line != NULL) free(line);
+	
+	return val;
+}
+
+char* get_line_s(const char* msg) {
+	char* line;
+	
+	line = readline(msg);
+	
+	return line;
+}
+
+
+int int_or_0(char* str) {
+	errno = 0;
+	
+	long l = strtol(str,NULL,0);
+	
+	if (errno) return 0;
+	
+	return (int)l;
+}
+
+
 void input_add_inventory() {
 	int amount;
 	int tea_id;
 	
-	printf("Which tea needs to be updated? ");
+	tea_id = get_line_i("Which tea needs to be updated? ");
 	
-	getchar();
-	char input = getchar();
+	if(tea_id <= 0) return;
 	
-	if(!isdigit(input)) return;
-	
-	tea_id = input - '0';
-	
-	printf("How much should be added [1]? ");
-	
-	input = getchar();
-	
-	amount = isdigit(input)
-		? -1 * (input - '0')
-		: -1;
+	amount = -1 * get_line_i("How much should be added? ");
 	
 	drink_tea(tea_id,amount);
 }
@@ -164,22 +193,11 @@ void input_drink_tea() {
 	int amount;
 	int tea_id;
 	
-	printf("Which tea would you like to drink? ");
+	tea_id = get_line_i("Which tea would you like to drink? ");
 	
-	getchar();
-	char input = getchar();
+	if(tea_id <= 0) return;
 	
-	if(!isdigit(input)) return;
-	
-	tea_id = input - '0';
-	
-	printf("How much did you drink [1]? ");
-	
-	input = getchar();
-	
-	amount = isdigit(input)
-		? input - '0'
-		: 1;
+	amount = get_line_i("How much did you drink? ");
 	
 	drink_tea(tea_id,amount);
 }

@@ -2,7 +2,7 @@ CFLAGS=	-W -Wall -I.. -pthread -g
 
 all:
 	OS=`uname`; \
-	  test "$$OS" = Linux && LIBS="-ldl" ; \
+	  test "$$OS" = Linux && LIBS="-ldl -lreadline" ; \
 	  $(CC) $(CFLAGS) tdb.c  $$LIBS $(ADD) -o tdb `mysql_config --cflags --libs`;
 
 clean:
