@@ -82,6 +82,7 @@ MYSQL_RES* tea_mysql_query_res(char* query) {
 
 
 /* ===== REGULAR HELPER FNS ===== */
+void input_add_inventory();
 void input_drink_tea();
 int list_tea_inventory(int show_nums);
 void print_options();
@@ -108,6 +109,14 @@ int do_input() {
 			input_drink_tea();
 			
 			break;
+		
+		case '3':
+			printf("add inventory\n");
+			list_tea_inventory(1);
+			
+			input_add_inventory();
+			
+			break;
 			
 		default:
 			print_options();
@@ -126,7 +135,35 @@ int drink_tea(int which,int amount) {
 }
 
 
+void input_add_inventory() {
+	int amount;
+	int tea_id;
+	
+	printf("Which tea needs to be updated? ");
+	
+	getchar();
+	char input = getchar();
+	
+	if(!isdigit(input)) return;
+	
+	tea_id = input - '0';
+	
+	printf("How much should be added [1]? ");
+	
+	input = getchar();
+	
+	amount = isdigit(input)
+		? -1 * (input - '0')
+		: -1;
+	
+	drink_tea(tea_id,amount);
+}
+
+
 void input_drink_tea() {
+	int amount;
+	int tea_id;
+	
 	printf("Which tea would you like to drink? ");
 	
 	getchar();
@@ -134,7 +171,17 @@ void input_drink_tea() {
 	
 	if(!isdigit(input)) return;
 	
-	drink_tea(input - '0',1);
+	tea_id = input - '0';
+	
+	printf("How much did you drink [1]? ");
+	
+	input = getchar();
+	
+	amount = isdigit(input)
+		? input - '0'
+		: 1;
+	
+	drink_tea(tea_id,amount);
 }
 
 
@@ -174,7 +221,7 @@ int list_tea_inventory(int show_nums) {
 
 
 void print_options() {
-	printf("1: view inventory, 2: drink tea, x: exit\n");
+	printf("1: view inventory, 2: drink tea, 3: add inventory, x: exit\n");
 }
 
 
