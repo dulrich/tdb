@@ -1,3 +1,19 @@
+// tdb: A Silly Program For Tracking Tea Inventory and Consumption
+// Copyright (C) 2014 David Ulrich
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+// 
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -212,7 +228,7 @@ int list_tea_inventory(int show_nums) {
 	"LEFT JOIN tea_type Y ON T.TeaTypeID = Y.TeaTypeID "
 	"LEFT JOIN tea_unit U ON I.TeaUnitID = U.TeaUnitID "
 	"WHERE I.TeaQuantity > 0 ";
-	printf("1\n");
+	
 	MYSQL_RES* result = tea_mysql_query_res(query);
 	if (result == NULL) return 1;
 	
