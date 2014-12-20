@@ -25,10 +25,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-static char* TEA_DB_HOST = "localhost";
-static char* TEA_DB_USER = "root";
-static char* TEA_DB_PASS = "34dS&9ee";
-static char* TEA_DB_NAME = "tdb";
+#include "config.h" // make sure your config contains the correct values
 
 struct TeaInventory {
 	int TeaInventoryID;
