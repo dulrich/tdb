@@ -1,23 +1,20 @@
-# tdb #
+# tdb
 
 A Silly Program For Tracking Tea Inventory and Consumption
 
 tdb exists to play with the mysql c api, in addition to having a little fun managing my caffeine collection.
 
 
-# DEPENDECNIES #
+# setup
 
 * libmysqlclient
 * libreadline6
-
-
-# Setup #
 
 Copy `config.example.h` to `config.h` and put in the correct credentials.
 `db-setup.sql` has schema and some sample db values.
 
 
-# LICENSE/COPYING #
+# license
 
 tdb is copyright (C) 2014 - 2015  David Ulrich.
 
