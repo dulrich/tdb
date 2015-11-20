@@ -19,13 +19,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <my_global.h>
-#include <mysql.h>
+#include "db.h"
 
 #include <readline/readline.h>
 #include <readline/history.h>
 
-#include "config.h" // make sure your config contains the correct values
+#include "../config.h" // make sure your config contains the correct values
 
 struct TeaInventory {
 	int TeaInventoryID;
@@ -35,67 +34,6 @@ struct TeaInventory {
 	char TeaUnit[128*2+1];
 	int TeaServingsPerUnit;
 };
-
-
-/* ===== MYSQL HELPER FNS ===== */
-int tea_mysql_close();
-int tea_mysql_error();
-int tea_mysql_query(char* query);
-MYSQL_RES* tea_mysql_query_res(char* query);
-
-MYSQL* tea_conn;
-
-int tea_mysql_close() {
-	mysql_close(tea_conn);
-	tea_conn = NULL;
-	return 0;
-}
-
-int tea_mysql_error() {
-	if (tea_conn == NULL) return 1;
-	
-	fprintf(stderr, "%s\n", mysql_error(tea_conn));
-	return 1;
-}
-
-int tea_mysql_query(char* query) {
-	MYSQL_RES* result = tea_mysql_query_res(query);
-	
-	if (result != NULL) mysql_free_result(result);
-	
-	return 0;
-}
-
-MYSQL_RES* tea_mysql_query_res(char* query) {
-	if (tea_conn == NULL) {
-		tea_conn = mysql_init(NULL);
-	
-		if (tea_conn == NULL) {
-			fprintf(stderr, "%s\n", mysql_error(tea_conn));
-			return NULL;
-		}
-		
-		if (mysql_real_connect(tea_conn,TEA_DB_HOST,TEA_DB_USER,TEA_DB_PASS,TEA_DB_NAME,0,NULL,0) == NULL) {
-			tea_mysql_error(tea_conn);
-			return NULL;
-		}
-	}
-	
-	if (mysql_query(tea_conn, query)) {
-		tea_mysql_error(tea_conn);
-		return NULL;
-	}
-	
-	MYSQL_RES* result = mysql_store_result(tea_conn);
-	
-	if (result == NULL) {
-		tea_mysql_error(tea_conn);
-	}
-	
-	return result;
-}
-
-
 
 
 /* ===== REGULAR HELPER FNS ===== */
@@ -108,15 +46,33 @@ int list_tea_inventory(int show_nums);
 void print_options();
 
 
+void database_init() {
+	char query[128];
+	const char* query_db = "CREATE DATABASE IF NOT EXISTS %s";
+	
+	snprintf(query,sizeof(query),query_db,TEA_DB_NAME);
+	
+	tea_mysql_query_db(NULL,query);
+	tea_mysql_close();
+	
+	// STUB: source and run db-setup.sql
+}
+
 int do_input() {
 	char input = getchar();
 	
 	switch(input) {
+		case 'i':
+			printf("initializing database.\n");
+			database_init();
+			printf("done.\n");
+			break;
+		
 		case 'x':
-			printf("got x\n");
+			printf("goodbye.\n");
 			return 0;
 			break;
-			
+		
 		case '1':
 			printf("listing inventory\n");
 			list_tea_inventory(0);
@@ -137,7 +93,7 @@ int do_input() {
 			input_add_inventory();
 			
 			break;
-			
+		
 		default:
 			print_options();
 	}
@@ -149,7 +105,11 @@ int do_input() {
 int drink_tea(int which,int amount) {
 	char query[1024];
 	
-	snprintf(query,sizeof(query),"UPDATE tea_inventory SET TeaQuantity = TeaQuantity - %d WHERE TeaInventoryID = %d",amount,which);
+	const char* query_template = "UPDATE tea_inventory "
+		"SET TeaQuantity = TeaQuantity - %d "
+		"WHERE TeaInventoryID = %d";
+	
+	snprintf(query,sizeof(query),query_template,amount,which);
 	
 	return tea_mysql_query(query);
 }
@@ -252,7 +212,13 @@ int list_tea_inventory(int show_nums) {
 
 
 void print_options() {
-	printf("1: view inventory, 2: drink tea, 3: add inventory, x: exit\n");
+	printf(
+		"1: view inventory, "
+		"2: drink tea, "
+		"3: add inventory, "
+		"i: initialize db, "
+		"x: exit\n"
+	);
 }
 
 
