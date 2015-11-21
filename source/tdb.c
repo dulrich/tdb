@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "util.h"
 #include "db.h"
 
 #include <readline/readline.h>
@@ -49,13 +50,22 @@ void print_options();
 void database_init() {
 	char query[128];
 	const char* query_db = "CREATE DATABASE IF NOT EXISTS %s";
+	char* query_tables;
 	
 	snprintf(query,sizeof(query),query_db,TEA_DB_NAME);
 	
 	tea_mysql_query_db(NULL,query);
 	tea_mysql_close();
 	
-	// STUB: source and run db-setup.sql
+	query_tables = tea_file_read("/code/tdb/db-setup.sql",NULL);
+	
+	if (query_tables) {
+		tea_mysql_query(query_tables);
+		
+		free(query_tables);
+	}
+	
+	tea_mysql_close(); // don't leave in a broken state
 }
 
 int do_input() {

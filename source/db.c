@@ -67,7 +67,16 @@ MYSQL_RES* tea_mysql_query_db_res(char* db,char* query) {
 			return NULL;
 		}
 		
-		if (mysql_real_connect(tea_conn,TEA_DB_HOST,TEA_DB_USER,TEA_DB_PASS,db,0,NULL,0) == NULL) {
+		if (mysql_real_connect(
+			tea_conn,
+			TEA_DB_HOST,
+			TEA_DB_USER,
+			TEA_DB_PASS,
+			db,
+			0,
+			NULL,
+			CLIENT_MULTI_STATEMENTS
+		) == NULL) {
 			tea_mysql_error(tea_conn);
 			return NULL;
 		}
