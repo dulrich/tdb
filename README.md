@@ -10,7 +10,7 @@ tdb exists to play with the mysql c api, in addition to having a little fun mana
 * libmysqlclient
 * libreadline6
 
-Copy `config.example.h` to `config.h` and put in the correct credentials.
+Copy `config.example.lua` to `config.lua` and put in the correct credentials.
 `db-setup.sql` has schema and some sample db values.
 
 

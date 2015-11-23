@@ -14,8 +14,18 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-static char* TEA_DB_HOST = "localhost";
-static char* TEA_DB_USER = "tdb_user";
-static char* TEA_DB_PASS = "tdb_password";
-static char* TEA_DB_NAME = "tdb";
+#ifndef TDB_CONFIG_H
+#define TDB_CONFIG_H
 
+typedef struct {
+	char* db_host;
+	char* db_user;
+	char* db_pass;
+	char* db_name;
+} TDB_config;
+
+TDB_config CONFIG;
+
+void TDB_config_load(char* path);
+
+#endif // TDB_CONFIG_H

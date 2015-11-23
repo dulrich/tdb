@@ -21,10 +21,10 @@
 #include <mysql.h>
 
 int tea_mysql_close();
-int tea_mysql_error();
-int tea_mysql_query(char* query);
-int tea_mysql_query_db(char* db,char* query);
-MYSQL_RES* tea_mysql_query_res(char* query);
-MYSQL_RES* tea_mysql_query_db_res(char* db,char* query);
+int tea_mysql_error(const char* err_type);
+int tea_mysql_query(const char* query);
+int tea_mysql_query_db(const char* db,const char* query);
+MYSQL_RES* tea_mysql_query_res(const char* query);
+MYSQL_RES* tea_mysql_query_db_res(const char* db,const char* query);
 
 #endif // TDB_DB_H

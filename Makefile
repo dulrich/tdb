@@ -1,6 +1,6 @@
 SRC_DIR = source
 OBJ_DIR = object
-LIBS = #lua5.2 dl readline
+LIBS = lua5.2 #dl readline
 
 CC		= gcc
 DEBUG		= -g

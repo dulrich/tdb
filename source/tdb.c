@@ -25,7 +25,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-#include "../config.h" // make sure your config contains the correct values
+#include "config.h" // make sure your config contains the correct values
 
 struct TeaInventory {
 	int TeaInventoryID;
@@ -52,7 +52,7 @@ void database_init() {
 	const char* query_db = "CREATE DATABASE IF NOT EXISTS %s";
 	char* query_tables;
 	
-	snprintf(query,sizeof(query),query_db,TEA_DB_NAME);
+	snprintf(query,sizeof(query),query_db,CONFIG.db_name);
 	
 	tea_mysql_query_db(NULL,query);
 	tea_mysql_close();
@@ -235,6 +235,8 @@ void print_options() {
 /* ===== MAIN ===== */
 int main(/*int argc,char* argv[]*/) {
 // 	printf("MySQL client version: %s\n", mysql_get_client_info());
+	
+	TDB_config_load("/code/tdb/config.lua");
 	
 	print_options();
 	while(do_input()) {}

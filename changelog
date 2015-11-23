@@ -1,0 +1,14 @@
+# todo
+
+* proper multiple statement query handling
+* non-hardcoded config path (user run dir)
+
+
+# 2015-11-22 -- 1.1.0
+* replace config header with more generic lua config loader
+
+# 2015-11-20 -- 1.0.1
+* add functionality to initialize the db from inside tdb
+
+# 2015-11-19 -- 1.0.0
+* refactor into standard project layout (source/,object/)

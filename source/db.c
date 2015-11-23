@@ -22,7 +22,7 @@
 #include <my_global.h>
 #include <mysql.h>
 
-#include "../config.h" // make sure your config contains the correct values
+#include "config.h" // make sure your config contains the correct values
 
 #include "db.h"
 
@@ -35,18 +35,18 @@ int tea_mysql_close() {
 	return 0;
 }
 
-int tea_mysql_error() {
+int tea_mysql_error(const char* err_type) {
 	if (tea_conn == NULL) return 1;
 	
-	fprintf(stderr, "mysql error:%s\n", mysql_error(tea_conn));
+	fprintf(stderr, "mysql %s error:%s\n",err_type,mysql_error(tea_conn));
 	return 1;
 }
 
-int tea_mysql_query(char* query) {
-	return tea_mysql_query_db(TEA_DB_NAME,query);
+int tea_mysql_query(const char* query) {
+	return tea_mysql_query_db(CONFIG.db_name,query);
 }
 
-int tea_mysql_query_db(char* db,char* query) {
+int tea_mysql_query_db(const char* db,const char* query) {
 	MYSQL_RES* result = tea_mysql_query_db_res(db,query);
 	
 	if (result != NULL) mysql_free_result(result);
@@ -54,11 +54,11 @@ int tea_mysql_query_db(char* db,char* query) {
 	return 0;
 }
 
-MYSQL_RES* tea_mysql_query_res(char* query) {
-	return tea_mysql_query_db_res(TEA_DB_NAME,query);
+MYSQL_RES* tea_mysql_query_res(const char* query) {
+	return tea_mysql_query_db_res(CONFIG.db_name,query);
 }
 
-MYSQL_RES* tea_mysql_query_db_res(char* db,char* query) {
+MYSQL_RES* tea_mysql_query_db_res(const char* db,const char* query) {
 	if (tea_conn == NULL) {
 		tea_conn = mysql_init(NULL);
 	
@@ -69,29 +69,30 @@ MYSQL_RES* tea_mysql_query_db_res(char* db,char* query) {
 		
 		if (mysql_real_connect(
 			tea_conn,
-			TEA_DB_HOST,
-			TEA_DB_USER,
-			TEA_DB_PASS,
+			CONFIG.db_host,
+			CONFIG.db_user,
+			CONFIG.db_pass,
 			db,
 			0,
 			NULL,
 			CLIENT_MULTI_STATEMENTS
 		) == NULL) {
-			tea_mysql_error(tea_conn);
+			tea_mysql_error("connection");
 			return NULL;
 		}
 	}
 	
 	if (mysql_query(tea_conn, query)) {
-		tea_mysql_error(tea_conn);
+		tea_mysql_error("query");
 		return NULL;
 	}
 	
 	MYSQL_RES* result = mysql_store_result(tea_conn);
 	
-	if (result == NULL) {
-		tea_mysql_error(tea_conn);
-	}
+	// this is only an error if the query should have returned results
+	// if (result == NULL) {
+	// 	tea_mysql_error("result");
+	// }
 	
 	return result;
 }
