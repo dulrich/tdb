@@ -27,5 +27,6 @@ typedef struct {
 TDB_config CONFIG;
 
 void TDB_config_load(char* path);
+void TDB_config_unload();
 
 #endif // TDB_CONFIG_H

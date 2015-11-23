@@ -99,3 +99,13 @@ void TDB_config_load(char* path) {
 	
 	lua_close(L);
 }
+
+void TDB_config_unload() {
+	int i;
+	
+	for(i=0;i<TDB_OPT_LENGTH;i++) {
+		if (options[i].type == TDB_CONFIG_STRING) {
+			free(*(char**)options[i].pointer);
+		}
+	}
+}
