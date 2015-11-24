@@ -1,8 +1,12 @@
 # todo
 
 * proper multiple statement query handling
-* non-hardcoded config path (user run dir)
+* check for existence of path in config loader
 
+
+# 2015-11-23 -- 1.1.1
+* load config from cwd instead of hard coded path
+* add config double type
 
 # 2015-11-22 -- 1.1.0
 * replace config header with more generic lua config loader

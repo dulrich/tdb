@@ -28,6 +28,7 @@
 
 
 typedef enum {
+	TDB_CONFIG_DOUBLE,
 	TDB_CONFIG_INT,
 	TDB_CONFIG_FLOAT,
 	TDB_CONFIG_STRING
@@ -46,13 +47,13 @@ typedef struct {
 	const void* pointer;
 } TDB_config_option;
 
-#define TDB_OPT_LENGTH 4
-static const TDB_config_option options[TDB_OPT_LENGTH] = {
+static const TDB_config_option options[] = {
 	{ "DB_HOST", TDB_CONFIG_STRING, (void*)&CONFIG.db_host },
 	{ "DB_USER", TDB_CONFIG_STRING, (void*)&CONFIG.db_user },
 	{ "DB_PASS", TDB_CONFIG_STRING, (void*)&CONFIG.db_pass },
 	{ "DB_NAME", TDB_CONFIG_STRING, (void*)&CONFIG.db_name }
 };
+int TDB_option_count = sizeof(options) / sizeof(TDB_config_option);
 
 void TDB_config_load(char* path) {
 	int i;
@@ -65,10 +66,22 @@ void TDB_config_load(char* path) {
 		printf("error in config.lua: %s",lua_tostring(L,-1));
 	}
 	
-	for(i=0;i<TDB_OPT_LENGTH;i++) {
+	for(i=0;i<TDB_option_count;i++) {
 		lua_getglobal(L,options[i].name);
 		
-		if (options[i].type == TDB_CONFIG_INT) {
+		if (options[i].type == TDB_CONFIG_DOUBLE) {
+			if (lua_isnumber(L,-1)) {
+				*(double*)options[i].pointer = (double)lua_tonumber(L,-1);
+			}
+			else {
+				printf(
+					"dounble config option %s was not a number:%s\n",
+					options[i].name,
+					lua_tostring(L,-2)
+				);
+			}
+		}
+		else if (options[i].type == TDB_CONFIG_INT) {
 			if (lua_isnumber(L,-1)) {
 				*(int*)options[i].pointer = (int)lua_tonumber(L,-1);
 			}
@@ -103,7 +116,7 @@ void TDB_config_load(char* path) {
 void TDB_config_unload() {
 	int i;
 	
-	for(i=0;i<TDB_OPT_LENGTH;i++) {
+	for(i=0;i<TDB_option_count;i++) {
 		if (options[i].type == TDB_CONFIG_STRING) {
 			free(*(char**)options[i].pointer);
 		}

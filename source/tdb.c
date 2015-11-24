@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "util.h"
 #include "db.h"
@@ -234,9 +235,19 @@ void print_options() {
 
 /* ===== MAIN ===== */
 int main(/*int argc,char* argv[]*/) {
-// 	printf("MySQL client version: %s\n", mysql_get_client_info());
+	char dir[1024];
+	char path_config[1024];
 	
-	TDB_config_load("/code/tdb/config.lua");
+	getcwd(dir,sizeof(dir));
+	
+	if (!*dir) {
+		printf("unable to get current working directory.\n");
+		return 1;
+	}
+	
+	snprintf(path_config,sizeof(path_config),"%s/config.lua",dir);
+	
+	TDB_config_load(path_config);
 	
 	print_options();
 	while(do_input()) {}
