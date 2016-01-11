@@ -16,7 +16,7 @@ Copy `config.example.lua` to `config.lua` and put in the correct credentials.
 
 # license
 
-tdb is copyright (C) 2014 - 2015  David Ulrich.
+tdb is copyright (C) 2014 - 2016  David Ulrich.
 
 For full license details see LICENSE.
 

@@ -4,6 +4,9 @@
 * check for existence of path in config loader
 
 
+# 2016-01-10 -- 1.1.2
+* basic table-like format for tea inventory display
+
 # 2015-11-23 -- 1.1.1
 * load config from cwd instead of hard coded path
 * add config double type

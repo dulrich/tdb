@@ -1,5 +1,5 @@
 // tdb: A Silly Program For Tracking Tea Inventory and Consumption
-// Copyright (C) 2014 - 2015  David Ulrich
+// Copyright (C) 2014 - 2016  David Ulrich
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published
@@ -186,11 +186,34 @@ void input_drink_tea() {
 	drink_tea(tea_id,amount);
 }
 
+const char* sep_s = "===============================================";
+
+const char * const tea_inventory_title[] = {
+	"ID",
+	"QoH",
+	"Description",
+	"Type",
+	"Unit",
+	"Serve"
+};
+
+const char * const tea_inventory_format[] = {
+	"%2.2s ",
+	"%5.5s ",
+	"%-24.24s ",
+	"%-8.8s ",
+	"%-6.6s ",
+	"%5.5s"
+};
 
 int list_tea_inventory(int show_nums) {
 	char* query = "SELECT "
-	"	I.TeaInventoryID,I.TeaQuantity,T.TeaName,"
-	"	Y.TeaType,U.TeaUnit,I.TeaServingsPerUnit "
+	"	I.TeaInventoryID,"
+	"	I.TeaQuantity,"
+	"	T.TeaName,"
+	"	Y.TeaType,"
+	"	U.TeaUnit,"
+	"	I.TeaServingsPerUnit "
 	"FROM tea_inventory I "
 	"LEFT JOIN tea T ON I.TeaID = T.TeaID "
 	"LEFT JOIN tea_type Y ON T.TeaTypeID = Y.TeaTypeID "
@@ -205,16 +228,26 @@ int list_tea_inventory(int show_nums) {
 	int row_count = 0;
 	MYSQL_ROW row;
 	
-	while ((row = mysql_fetch_row(result))) 
+	for(i = 0; i < num_fields; i++) {
+		printf(tea_inventory_format[i],tea_inventory_title[i]);
+	}
+	printf("\n");
+	
+	for(i = 0; i < num_fields; i++) {
+		printf(tea_inventory_format[i],sep_s);
+	}
+	printf("\n");
+	
+	while ((row = mysql_fetch_row(result)))
 	{
 		row_count++;
 		
 		if (show_nums) printf("%d) ",row_count);
 		
 		for(i = 0; i < num_fields; i++) {
-			printf("%s ",row[i] ? row[i] : "NULL"); 
+			printf(tea_inventory_format[i],row[i] ? row[i] : "NULL");
 		}
-		printf("\n"); 
+		printf("\n");
 	}
 	
 	mysql_free_result(result);
